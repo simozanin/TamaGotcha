@@ -2,25 +2,41 @@ from TamaGotcha import Tama
 import random
 import threading
 import time
+import sys 
+
+
 
 class Game:
     def print_intro_message(self):
-        print("Welcome to TamaGotcha\n",
+        print("###################################\n",
+          "Welcome to TamaGotcha\n",
           "###################################\n")
     def __init__(self):
 
         self.print_intro_message()
     
     def play(self):
-
-        self.my_pet = Tama()
+        name = input("What do you want to name me?\n")
+        self.my_pet = Tama(name)
         x = threading.Thread(target=self.my_pet.start_living)
-        x.start()
-        self.monitor_condition()
+        x.daemon = True
+        try:
+            x.start()
+            self.monitor_condition()
+        except KeyboardInterrupt:
+            x.join()
+            
+
+
+            
 
     def monitor_condition(self):
         while True:
-            time.sleep(1)
-            # print("It's been 10 seconds")
+            try:
+                time.sleep(1)
+                self.my_pet.check_on_me()
+            except KeyboardInterrupt:
+                return
+
 
 
