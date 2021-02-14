@@ -7,6 +7,7 @@ class Tama:
         self.name = name
         self.born = datetime.now()
         self.last_fed = None
+        self.last_slept = None
         self.commands = {'f': self.feed,
                         's': self.sleep,
                         'c': self.clean,
@@ -20,6 +21,7 @@ class Tama:
         self.is_sleeping = False
         self.poops_around = 0
         self.no_orders_yet = True
+        self.notified_hungry, self.notified_dirty = False, False
 
     def start_living(self):
 
@@ -39,6 +41,7 @@ class Tama:
                 return
 
     def feed(self):
+        self.notified_hungry = False
         if self.is_sleeping:
             return "Shhh! I'm not hungry, I'm sleeping!"
         if not self.last_fed:
@@ -47,7 +50,7 @@ class Tama:
             self.health = max(0, self.health-1)
             message = 'But my tummy hurts now...'
         else:
-            self.health = min(10, self.health+1)
+            self.health = min(10, self.health+5)
             message = "My tummy is happy now!"
 
         self.last_fed = datetime.now()
@@ -63,15 +66,16 @@ class Tama:
         else:
             self.is_sleeping = True
             self.started_sleeping = datetime.now()
-            self.sleep_time = random.randint(15,25) + 10 * (self.is_baby or self.is_elderly)
+            self.sleep_time = random.randint(10,15) + 5 * (self.is_baby or self.is_elderly)
             self.health = min(10, self.health+1)
 
         return "Gotcha... z Z z Z"
     
     def clean(self):
         if self.poops_around == 0:
-            return "Nothing to clean, but thanks for asking!"
+            return "Nothing to clean, but thanks for being proactive!"
         self.poops_around -= 1
+        self.notified_dirty = False
         return "Thanks for cleaning!"  
 
     def vitals(self):
@@ -88,24 +92,74 @@ class Tama:
     def update(self):
         if self.no_orders_yet:
             if (datetime.now() - self.born).seconds > 30:
-                print("It's been 30 seconds since I was born but I haven't been fed... Such a tragedy :-(")
+                print("It's been more than 30 seconds since I was born but I haven't been fed... Such a tragedy :-(")
                 sys.exit(1)
             return
         
         if not self.is_sleeping:
             feed_status = float((datetime.now() - self.last_fed).seconds )/  self.seconds_till_next_meal
             self.feed_status = max(0, 10 - int(feed_status*100) //10 )
+
+            if random.random() > .9:
+                self.poops_around += 1
+                print("Ooops, sorry, I had to poop!")
+
             if self.feed_status <= 2:
-                print("My tummy is grumbling...")
+                self.health = max(0, self.health - 1)
+                if not self.notified_hungry:
+                    print("My tummy is grumbling...")
+                    self.notified_hungry = True
 
             if self.poops_around > 3:
-                print("Ewww, this place is stinky!")
                 self.health = max(0, self.health -1)
+                if not self.notified_dirty:
+                    print("Ewww, this place is stinky!")
+                    self.notified_dirty = True
+            
+            if self.health == 3:
+                print("I'm not feeling very well...")
+            elif self.health == 2:
+                print("I'm really not feeling well at all!")
+            elif self.health == 1:
+                print("Please do something!")
+            elif self.health == 0:
+                print("Oh no... Your TamaGotcha {0} died... :-(".format(self.name))
+                sys.exit()
+
+            if self.is_baby and (datetime.now() - self.born).seconds > random.randint(100, 150):
+                self.is_baby = False
+                self.is_adult = True
+                print("Hey, I'm not a baby anymore! I'm a full grown TamaGotcha now!")
+                return
+            elif self.is_adult and (datetime.now() - self.born).seconds > random.randint(200, 300):
+                self.is_adult = False
+                self.is_elderly = True
+                print("I'm getting old!")
+                return
+            elif self.is_elderly and (datetime.now() - self.born).seconds > random.randint(300, 350):
+                print("Your TamaGotcha has died of old age. Thanks for taking such good care of {0}".format(self.name))
+                sys.exit()
+
+
+            if not self.last_slept:
+                if (datetime.now() - self.born).seconds > 30:
+                    print("Going to sleep now...")
+                    self.sleep()
+            else:
+                if (datetime.now() - self.last_slept).seconds > 60:
+                    print("Going to sleep now...")
+                    self.sleep()
+
+
+
         else:
             if (datetime.now() - self.started_sleeping).seconds > self.sleep_time:
                 print("Yaaaaawn! Hello! I had a great sleep!")
                 self.is_sleeping = False
                 self.health = 10
+                self.last_slept = datetime.now()
+                self.notified_dirty = False
+                self.notified_hungry = False
 
 
         

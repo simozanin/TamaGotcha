@@ -16,8 +16,8 @@ class Game:
         self.print_intro_message()
     
     def play(self):
-        name = input("What do you want to name me?\n")
-        self.my_pet = Tama(name)
+        # name = input("What do you want to name me?\n")
+        self.my_pet = Tama()
         x = threading.Thread(target=self.my_pet.start_living)
         x.daemon = True
         try:
@@ -26,14 +26,10 @@ class Game:
         except KeyboardInterrupt:
             x.join()
             
-
-
-            
-
     def monitor_condition(self):
         while True:
             try:
-                time.sleep(1)
+                time.sleep(2)
                 self.my_pet.check_on_me()
             except KeyboardInterrupt:
                 return
