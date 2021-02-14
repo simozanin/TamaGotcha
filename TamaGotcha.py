@@ -50,12 +50,12 @@ class Tama:
             self.health = max(0, self.health-1)
             message = 'But my tummy hurts now...'
         else:
-            self.health = min(10, self.health+5)
+            self.health = min(10, self.health+6)
             message = "My tummy is happy now!"
 
         self.last_fed = datetime.now()
         self.seconds_till_next_meal = random.randint(20,30)
-
+        self.feed_status = 10
 
         return "Gotcha! "+ message
     
@@ -100,7 +100,7 @@ class Tama:
             feed_status = float((datetime.now() - self.last_fed).seconds )/  self.seconds_till_next_meal
             self.feed_status = max(0, 10 - int(feed_status*100) //10 )
 
-            if random.random() > .9:
+            if random.random() > .85:
                 self.poops_around += 1
                 print("Ooops, sorry, I had to poop!")
 
@@ -110,7 +110,7 @@ class Tama:
                     print("My tummy is grumbling...")
                     self.notified_hungry = True
 
-            if self.poops_around > 3:
+            if self.poops_around > 2:
                 self.health = max(0, self.health -1)
                 if not self.notified_dirty:
                     print("Ewww, this place is stinky!")
