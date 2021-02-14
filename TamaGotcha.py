@@ -83,7 +83,7 @@ class Tama:
         return ", ".join([k + ": " + str(metrics[k]) + "/10" for k in metrics])
 
     def help_me(self):
-        return "\n".join(self.instructions()) 
+        return "\n".join(self.command_help()) 
     
     def get_metrics(self):
         return {"Health": self.health,
@@ -170,22 +170,23 @@ class Tama:
         self.update()
 
 
-
-
-    def instructions(self):
-        return ["#################################################################################",
-        "",
-        "Use the following commands to keep me alive and happy! :D\n",\
+    def command_help(self):
+        return ["Use the following commands to keep me alive and happy! :D\n",\
         "f:  Feed me!",
         "s:  Put me to bed... z Z z Z",
         "c:  Clean up my droppings @",
         "v:  Check my vitals!",
-        "h:  Ask me for help to show these instructions again!",
+        "h:  Ask me for help to show these instructions again!",]
+
+    def instructions(self):
+        return ["#################################################################################",
         "\n\nIn order to give me the best life, feed me at least twice a minute,",
         "but not too often or I'll get sick! Feeding me increases my health!",
-        "Sleeping also replenishes my health! I need to get some sleep every minute!",
+        "Sleeping also replenishes my health! I need to get some sleep every minute,",
+        "and I'll go to sleep on my own if I'm feeling too tired.",
         "While I'm asleep I don't get hungry, and I don't poop!",
         "Oh yeah, about that... I do need to poop sometimes, and you'll need to clean up.",
         "If the place gets too dirty I might start feeling sick...",
+        "\n".join(self.command_help()),
         "#################################################################################"]
 
