@@ -2,7 +2,7 @@
 
 To start playing, simply run:
 
-python3 play.py
+`python3 play.py`
 
 Use the following commands to keep me alive and happy! :D
 
