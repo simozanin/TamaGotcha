@@ -3,9 +3,13 @@
 Use the following commands to keep me alive and happy! :D
 
 f:  Feed me!
+
 s:  Put me to bed... z Z z Z
-c:  Clean up my droppings @
+
+c:  Clean up my droppings
+
 v:  Check my vitals!
+
 h:  Ask me for help to show these instructions again!
 
 
